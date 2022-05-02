@@ -1,4 +1,5 @@
 #import asyncio
+#! zolupa?
 from aiogram import Bot, Dispatcher, types,  executor
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
@@ -8,103 +9,103 @@ import markups as nav
 
 BOT_TOKEN = "2113305271:AAGV6ReW77-yrSUo7KtfUIvwQ42TEH1kTyE"
 
-bot = Bot( token = BOT_TOKEN )
+bot = Bot(token=BOT_TOKEN)
 
-dp = Dispatcher( bot = bot )
+dp = Dispatcher(bot=bot)
 
 
-
-@dp.message_handler( commands = 'start' )
-async def say_hello( event: types.Message ):
+@dp.message_handler(commands='start')
+async def say_hello(event: types.Message):
     notification_by_person.clear()
     user_answers.clear()
-    await event.answer( f"Добрый день, { event.from_user.get_mention( as_html = True ) }, Вы обратились за помощью к боту-помшнику по обеспечению безопаснотсти! \n Вы готовы начать?",
-        parse_mode = types.ParseMode.HTML, reply_markup = nav.startMeny
-    )
+    await event.answer(f"Добрый день, { event.from_user.get_mention( as_html = True ) }, Вы обратились за помощью к боту-помшнику по обеспечению безопаснотсти! \n Вы готовы начать?",
+                       parse_mode=types.ParseMode.HTML, reply_markup=nav.startMeny
+                       )
 
-@dp.message_handler( Text( equals = 'Приступим', ignore_case = True ), state = '*' )
-async def first_type( event: types.Message, state: FSMContext ):
+
+@dp.message_handler(Text(equals='Приступим', ignore_case=True), state='*')
+async def first_type(event: types.Message, state: FSMContext):
     notification_by_person.clear()
     user_answers.clear()
-    await event.reply( f"Хорошо, { event.from_user.get_mention( as_html = True ) }, поехали... Выбери тип тайны", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.typesMeny
-    )
+    await event.reply(f"Хорошо, { event.from_user.get_mention( as_html = True ) }, поехали... Выбери тип тайны", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.typesMeny
+                      )
 
 user_answers = []
 
 
-@dp.message_handler( Text( equals = 'Коммерческая тайна', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
+@dp.message_handler(Text(equals='Коммерческая тайна', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
     notification_by_person.clear()
     user_answers.clear()
-    user_answers.append( 'KT' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, ввели ли Вы режим коммерческой тайны?", parse_mode = types.ParseMode.HTML, 
-                     reply_markup = nav.yourModeMeny
-   )
+    user_answers.append('KT')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, ввели ли Вы режим коммерческой тайны?", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.yourModeMeny
+                      )
 
 
-@dp.message_handler( Text( equals = 'Нет, не ввел', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'N' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, {do_help()}", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.completeMenu
-    )
-
-@dp.message_handler( Text( equals = 'Да, ввел', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'Y' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, существует ли в вашем предприятии отдел взаимодействующий с коммерческой тайной?",  parse_mode = types.ParseMode.HTML,
-                      reply_markup = nav.haveDepartament
-    )
+@dp.message_handler(Text(equals='Нет, не ввел', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('N')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, {do_help()}", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.completeMenu
+                      )
 
 
-@dp.message_handler( Text( equals = 'Нет, не существует', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'N' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, уверенны ли Вы в квалифицированности вашего персонала?", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.acceptQualification
-    )
+@dp.message_handler(Text(equals='Да, ввел', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('Y')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, существует ли в вашем предприятии отдел взаимодействующий с коммерческой тайной?",  parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.haveDepartament
+                      )
 
 
-@dp.message_handler( Text( equals = 'Да, существует', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'Y' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, уверенны ли Вы в квалифицированности вашего персонала?", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.acceptQualification
-    )
-
-@dp.message_handler( Text( equals = 'Сомневаюсь', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'N' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, организована ли у Вас техническая база для защиты информации?", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.techBase
-    )
+@dp.message_handler(Text(equals='Нет, не существует', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('N')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, уверенны ли Вы в квалифицированности вашего персонала?", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.acceptQualification
+                      )
 
 
-@dp.message_handler( Text( equals = 'Да, уверен', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'Y' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, организована ли у Вас техническая база для защиты информации?", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.techBase
-    )
+@dp.message_handler(Text(equals='Да, существует', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('Y')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, уверенны ли Вы в квалифицированности вашего персонала?", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.acceptQualification
+                      )
 
 
-@dp.message_handler( Text( equals = 'Не уверен', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'N' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, по результатам анализа ответов, мы предлагаем вам следущее: \n\n {do_help()}\n", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.completeMenu
-    )
+@dp.message_handler(Text(equals='Сомневаюсь', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('N')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, организована ли у Вас техническая база для защиты информации?", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.techBase
+                      )
 
 
-@dp.message_handler( Text( equals = 'База организована', ignore_case = True ), state = '*' )
-async def second_type( event: types.Message, state: FSMContext ):
-    user_answers.append( 'Y' )
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, по результатам анализа ответов, мы предлагаем вам следущее: \n\n {do_help()}\n", parse_mode = types.ParseMode.HTML,
-                      reply_markup = nav.completeMenu
-    )
+@dp.message_handler(Text(equals='Да, уверен', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('Y')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, организована ли у Вас техническая база для защиты информации?", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.techBase
+                      )
 
 
+@dp.message_handler(Text(equals='Не уверен', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('N')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, по результатам анализа ответов, мы предлагаем вам следущее: \n\n {do_help()}\n", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.completeMenu
+                      )
+
+
+@dp.message_handler(Text(equals='База организована', ignore_case=True), state='*')
+async def second_type(event: types.Message, state: FSMContext):
+    user_answers.append('Y')
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, по результатам анализа ответов, мы предлагаем вам следущее: \n\n {do_help()}\n", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.completeMenu
+                      )
 
 
 if_mode_none = f"Введение режима коммерческой тайны - основополагающий этап! \n\n Для введения этого режима, Вам необходимо: \n 1) Определить перечень информации, которая является коммерческой тайной; \n 2) Установить порядок работы и контроля за соблдением режима коммерческой тайны; \n 3) Организовать учет лиц, получивших доступ к коммерческой тайне; \n 4) Нанести на носители информации соответсвующий гриф 'Коммерческая тайна' и указадать данные ее обладателя. \n "
@@ -131,47 +132,46 @@ doc_base_if_mode_none = f"Все перечисленные рекомендац
 
 notification_by_person = []
 
+
 def do_help():
     if user_answers[0] == 'KT':
         if user_answers[1] == 'N':
             return (f"{if_mode_none} \n\n{doc_base_if_mode_none}")
         if user_answers[1] == 'Y':
             if user_answers[2] == 'N':
-                notification_by_person.append( if_havent_departament )
+                notification_by_person.append(if_havent_departament)
             if user_answers[2] == 'Y':
-                notification_by_person.append( if_have_departament )
+                notification_by_person.append(if_have_departament)
             if user_answers[3] == 'N':
-                notification_by_person.append( if_qualification_bad )
+                notification_by_person.append(if_qualification_bad)
             if user_answers[3] == 'Y':
-                notification_by_person.append( if_qualification_good ) 
+                notification_by_person.append(if_qualification_good)
             if user_answers[4] == 'N':
-                notification_by_person.append( if_base_bad )
+                notification_by_person.append(if_base_bad)
             if user_answers[4] == 'Y':
-                notification_by_person.append( if_base_good )
-    notification_by_person.append( do_check_act )
-    notification_by_person.append( doc_base )
+                notification_by_person.append(if_base_good)
+    notification_by_person.append(do_check_act)
+    notification_by_person.append(doc_base)
     return (f"{notification_by_person[0]} \n\n{notification_by_person[1]} \n\n{notification_by_person[2]} \n\n{notification_by_person[3]} \n\n {notification_by_person[4]}")
 
-        
-            
 
-@dp.message_handler( Text( equals = 'Вернуться в начало', ignore_case = True ), state = '*' )
-async def retry( event: types.Message, state: FSMContext ):
+@dp.message_handler(Text(equals='Вернуться в начало', ignore_case=True), state='*')
+async def retry(event: types.Message, state: FSMContext):
     user_answers.clear()
     notification_by_person.clear()
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, давайте наченем сначала...", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.startMeny
-    )
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, давайте наченем сначала...", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.startMeny
+                      )
 
-@dp.message_handler( Text( equals = 'Завершить', ignore_case = True ), state = '*' )
-async def retry( event: types.Message, state: FSMContext ):
+
+@dp.message_handler(Text(equals='Завершить', ignore_case=True), state='*')
+async def retry(event: types.Message, state: FSMContext):
     user_answers.clear()
     notification_by_person.clear()
-    await event.reply( f"{ event.from_user.get_mention( as_html = True ) }, спасибо, что воспользовались нашим помощником", parse_mode = types.ParseMode.HTML, 
-                      reply_markup = nav.startMeny
-    )
+    await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, спасибо, что воспользовались нашим помощником", parse_mode=types.ParseMode.HTML,
+                      reply_markup=nav.startMeny
+                      )
 
 
 if __name__ == '__main__':
-    executor.start_polling( dp )
-    
+    executor.start_polling(dp)
