@@ -8,7 +8,7 @@ from aiogram.types import message
 import btn as nav
 
 
-BOT_TOKEN = "ENTER YOUR TOKEN"
+BOT_TOKEN = "ENTER YOUR TOKEN HERE"
 
 bot = Bot(token=BOT_TOKEN)
 
@@ -18,14 +18,14 @@ dp = Dispatcher(bot=bot)
 @dp.message_handler(commands='start')
 async def say_hello(event: types.Message):
     await event.answer(f"Добрый день, { event.from_user.get_mention( as_html = True ) }, Вы обратились за помощью к боту-информатору по информационной безопасности! \n Вы готовы начать?",
-                       parse_mode=types.ParseMode.HTML, reply_markup=nav.startMeny
+                       parse_mode=types.ParseMode.HTML, reply_markup=nav.startMenu
                        )
 
 
 @dp.message_handler(Text(equals='Я готов!', ignore_case=True), state='*')
 async def first_type(event: types.Message, state: FSMContext):
     await event.reply(f"Хорошо, { event.from_user.get_mention( as_html = True ) }, поехали... Выбери тип тайны", parse_mode=types.ParseMode.HTML,
-                      reply_markup=nav.typesMeny
+                      reply_markup=nav.typesMenu
                       )
 
 
@@ -33,12 +33,14 @@ async def first_type(event: types.Message, state: FSMContext):
 @dp.message_handler(Text(equals='Государственная тайна', ignore_case=True), state='*')
 async def second_type(event: types.Message, state: FSMContext):
     await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, вы хотите ознакомиться с информацией о субъектах защищающих государственную тайну или ознакомиться с органами проверяющими защиту государственной тайны?", parse_mode=types.ParseMode.HTML,
-                      reply_markup=nav.yourModeMeny
-                      )
+                      reply_markup=nav.ChooseBTNS
+                     )
+
+
 @dp.message_handler(Text(equals='Назад', ignore_case=True), state='*')
-async def second_type(event: types.Message, state: FSMContext):
+async def second_type1(event: types.Message, state: FSMContext):
     await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, вы хотите ознакомиться с информацией о субъектах защищающих государственную тайну или ознакомиться с органами проверяющими защиту государственной тайны?", parse_mode=types.ParseMode.HTML,
-                      reply_markup=nav.yourModeMeny
+                      reply_markup=nav.ChooseBTNS
                       )
 
 ### БЛОК ОРГАНОВ ### 
@@ -128,7 +130,7 @@ async def second_type(event: types.Message, state: FSMContext):
 @dp.message_handler(Text(equals='Вернуться в начало', ignore_case=True), state='*')
 async def retry(event: types.Message, state: FSMContext):
     await event.reply(f"{ event.from_user.get_mention( as_html = True ) }, давайте наченем сначала...", parse_mode=types.ParseMode.HTML,
-                      reply_markup=nav.startMeny
+                      reply_markup=nav.startMenu
                       )
 
 
